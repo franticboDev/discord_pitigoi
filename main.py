@@ -28,4 +28,40 @@ async def say(interaction: discord.Interaction, thing_to_say: str):
     await interaction.response.send_message("sent message", ephemeral=True)
     await interaction.channel.send(f"{thing_to_say}")
 
+logs_channel = 1178981842217598997
+
+@bot.tree.command(name="kick", description="Kicks the bad guys.")
+@commands.has_role(1178981222433705994)
+@app_commands.describe(user = "User you want to kick.", reason = "What did he wrong?")
+async def kick(interaction: discord.Interaction, user: discord.Member, reason: str):
+    try:
+        await user.kick(reason=reason)
+        the_logs_channel = bot.get_channel(logs_channel)
+        await the_logs_channel.send(f"{user.mention} was kicked by {interaction.user.mention} for {reason}")
+        await interaction.response.send_message(f"Kicked {user.mention}", ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message(f"Could not kick the user.", ephemeral=True)
+
+@bot.tree.command(name="ban", description="Hammer.")
+@commands.has_role(1178981222433705994)
+@app_commands.describe(user = "User you want to ban.", reason = "What did he wrong?")
+async def kick(interaction: discord.Interaction, user: discord.Member, reason: str):
+    try:
+        await user.ban(reason=reason)
+        the_logs_channel = bot.get_channel(logs_channel)
+        await the_logs_channel.send(f"{user.mention} was banned by {interaction.user.mention} for {reason}")
+        await interaction.response.send_message(f"Banned {user.mention}", ephemeral=True)
+    except Exception as e:
+        await interaction.response.send_message(f"Could not ban the user.", ephemeral=True)
+
+@bot.tree.command(name="clear_all", description="Clears all the messages in chat.")
+@commands.has_role(1178981222433705994)
+async def clear_all(interaction: discord.Interaction):
+    try:
+        await interaction.response.send_message(f"Done.", ephemeral=True)
+        await interaction.channel.purge()
+        await interaction.channel.send("Cleaned all messages.")
+    except:
+        pass
+
 bot.run(token)
